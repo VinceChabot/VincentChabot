@@ -529,8 +529,8 @@
       .timeline-company-dates,
       .timeline-dates { font-size: 13px; }
 
-      .timeline-company-location-top { flex-direction: column; gap: 2px; align-items: flex-start; }
-      .timeline-company-dates { text-align: left; }
+      .timeline-company-location-top { flex-direction: column; gap: 2px; align-items: flex-start; justify-content: flex-start; }
+      .timeline-company-dates { text-align: left; align-self: flex-start; }
 
       .stack-grid { grid-template-columns: repeat(2, 1fr); }
       .projects-grid { grid-template-columns: 1fr; }
@@ -799,9 +799,9 @@
 
   <!-- CONTACT BAR -->
   <div class="contact-bar">
-    <a href="/cdn-cgi/l/email-protection#3a4c5354595f544e6559525b58554e030f7a52554e575b535614595557">
+    <a id="contact-bar-email" href="#">
       <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="2" y="4" width="20" height="16" rx="2"/><path d="m22 7-8.97 5.7a1.94 1.94 0 0 1-2.06 0L2 7"/></svg>
-      <span class="__cf_email__" data-cfemail="90e6f9fef3f5fee4cff3f8f1f2ffe4a9a5d0f8ffe4fdf1f9fcbef3fffd">[email&#160;protected]</span>
+      <span id="contact-bar-email-text"></span>
     </a>
     <div class="contact-links">
       <a href="resume.pdf" target="_blank">
@@ -976,15 +976,45 @@
   <section>
     <h2>Let's Talk</h2>
     <div class="contact-grid">
-      <a class="contact-card" href="/cdn-cgi/l/email-protection#25534c4b46404b517a464d44474a511c10654d4a5148444c490b464a48">
+      <a class="contact-card" id="contact-card-email" href="#">
         <div class="contact-card-icon">
           <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="2" y="4" width="20" height="16" rx="2"/><path d="m22 7-8.97 5.7a1.94 1.94 0 0 1-2.06 0L2 7"/></svg>
         </div>
         <div>
           <p class="contact-card-label">Email</p>
-          <p class="contact-card-value"><span class="__cf_email__" data-cfemail="9fe9f6f1fcfaf1ebc0fcf7fefdf0eba6aadff7f0ebf2fef6f3b1fcf0f2">[email&#160;protected]</span></p>
+          <p class="contact-card-value" id="contact-card-email-text"></p>
         </div>
       </a>
       <a class="contact-card" href="https://linkedin.com/in/vincechabot" target="_blank" rel="noopener">
         <div class="contact-card-icon">
-          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M16 8a6 6 0 0 1 6 6v7h-4v-7a2 2
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M16 8a6 6 0 0 1 6 6v7h-4v-7a2 2 0 0 0-2-2 2 2 0 0 0-2 2v7h-4v-7a6 6 0 0 1 6-6z"/><rect x="2" y="9" width="4" height="12"/><circle cx="4" cy="4" r="2"/></svg>
+        </div>
+        <div>
+          <p class="contact-card-label">LinkedIn</p>
+          <p class="contact-card-value">linkedin.com/in/vincechabot</p>
+        </div>
+      </a>      </a>
+    </div>
+  </section>
+
+</div><!-- /.page-wrapper -->
+
+<script>
+  // Build email at runtime to prevent Cloudflare obfuscation
+  var u = 'vincent_chabot95';
+  var d = 'hotmail.com';
+  var email = u + '@' + d;
+
+  var barLink = document.getElementById('contact-bar-email');
+  var barText = document.getElementById('contact-bar-email-text');
+  if (barLink) barLink.href = 'mailto:' + email;
+  if (barText) barText.textContent = email;
+
+  var cardLink = document.getElementById('contact-card-email');
+  var cardText = document.getElementById('contact-card-email-text');
+  if (cardLink) cardLink.href = 'mailto:' + email;
+  if (cardText) cardText.textContent = email;
+</script>
+
+</body>
+</html>
