@@ -77,6 +77,22 @@
 
     .header-info h1 span { color: var(--accent); }
 
+    .typed-cursor {
+      display: inline-block;
+      width: 2px;
+      background: var(--text-primary);
+      margin-left: 2px;
+      animation: blink 0.7s step-end infinite;
+      vertical-align: baseline;
+      height: 0.85em;
+      position: relative;
+      top: 0.05em;
+    }
+    @keyframes blink {
+      0%, 100% { opacity: 1; }
+      50% { opacity: 0; }
+    }
+
     .header-info .title {
       color: var(--text-secondary);
       font-weight: 300;
@@ -792,7 +808,7 @@
   <header class="header">
     <img class="avatar" src="profile.jpg" alt="Vincent Chabot">
     <div class="header-info">
-      <h1>Vincent Chabot<span>.</span></h1>
+      <h1 id="typed-name"></h1>
       <div class="header-meta">
         <span class="meta-item">
           <!-- location icon -->
@@ -1024,7 +1040,36 @@
   if (cardLink) cardLink.href = 'mailto:' + email;
   if (cardText) cardText.textContent = email;
 
-  // Two-tap for links on mobile
+  // Typing animation — runs once
+  (function() {
+    var el = document.getElementById('typed-name');
+    if (!el) return;
+    var text = 'Vincent Chabot';
+    var i = 0;
+    var cursor = document.createElement('span');
+    cursor.className = 'typed-cursor';
+    el.appendChild(cursor);
+
+    function type() {
+      if (i <= text.length) {
+        el.childNodes[0]
+          ? el.childNodes[0].textContent = text.slice(0, i)
+          : el.insertBefore(document.createTextNode(text.slice(0, i)), cursor);
+        i++;
+        setTimeout(type, 60);
+      } else {
+        // Add the blue dot, then stop cursor after a short pause
+        var dot = document.createElement('span');
+        dot.textContent = '.';
+        el.insertBefore(dot, cursor);
+        setTimeout(function() { cursor.remove(); }, 800);
+      }
+    }
+
+    // Insert empty text node before cursor so we can update it
+    el.insertBefore(document.createTextNode(''), cursor);
+    setTimeout(type, 300);
+  })();
   function isMobile() { return window.matchMedia('(max-width: 580px)').matches; }
 
   function setupTwoTap(selector) {
