@@ -547,7 +547,7 @@
     .timeline-company-group {
       position: relative;
       padding-left: 52px;
-      padding-bottom: 44px;
+      padding-bottom: 60px;
     }
 
     .timeline-company-group::before {
@@ -756,6 +756,33 @@
     }
 
   
+  /* ── VISIT SITE BUTTON (mobile two-tap) ── */
+  .visit-site-btn {
+    display: none; /* hidden on desktop */
+  }
+
+  @media (max-width: 580px) {
+    .visit-site-btn {
+      display: none;
+      margin-top: 10px;
+      padding: 6px 14px;
+      background: var(--accent);
+      color: #fff;
+      border-radius: 8px;
+      font-size: 13px;
+      font-weight: 600;
+      text-decoration: none;
+      width: fit-content;
+    }
+    a.timeline-company-group.tapped {
+      background: #f0f0f0;
+      box-shadow: 0 4px 16px rgba(0,0,0,0.08);
+    }
+    a.timeline-company-group.tapped .visit-site-btn {
+      display: inline-block;
+    }
+  }
+
   /* ── EXPERIENCE HOVER EFFECTS ── */
   .timeline-company-group {
     transition: transform 0.2s ease, box-shadow 0.2s ease;
@@ -1015,6 +1042,47 @@
   var cardText = document.getElementById('contact-card-email-text');
   if (cardLink) cardLink.href = 'mailto:' + email;
   if (cardText) cardText.textContent = email;
+
+  // Two-tap for company links on mobile
+  function isMobile() { return window.matchMedia('(max-width: 580px)').matches; }
+
+  document.querySelectorAll('a.timeline-company-group').forEach(function(card) {
+    var url = card.getAttribute('href');
+    if (!url || url === '#') return;
+
+    // Inject a "Visit site →" button inside each card
+    var btn = document.createElement('a');
+    btn.href = url;
+    btn.target = '_blank';
+    btn.rel = 'noopener';
+    btn.className = 'visit-site-btn';
+    btn.textContent = 'Visit site →';
+    btn.addEventListener('click', function(e) { e.stopPropagation(); });
+    card.appendChild(btn);
+
+    card.addEventListener('click', function(e) {
+      if (!isMobile()) return; // desktop: behave normally
+      var isActive = card.classList.contains('tapped');
+      // Close all other tapped cards
+      document.querySelectorAll('a.timeline-company-group.tapped').forEach(function(c) {
+        c.classList.remove('tapped');
+      });
+      if (!isActive) {
+        e.preventDefault();
+        card.classList.add('tapped');
+      }
+    });
+  });
+
+  // Tap outside to dismiss
+  document.addEventListener('click', function(e) {
+    if (!isMobile()) return;
+    if (!e.target.closest('a.timeline-company-group')) {
+      document.querySelectorAll('a.timeline-company-group.tapped').forEach(function(c) {
+        c.classList.remove('tapped');
+      });
+    }
+  });
 </script>
 
 </body>
