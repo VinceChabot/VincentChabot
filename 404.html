@@ -1,0 +1,93 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>404 – Page Not Found | Vincent Chabot</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;700&display=swap" rel="stylesheet">
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    :root {
+      --bg: hsl(0 0% 100%);
+      --text-primary: hsl(0 0% 14.5%);
+      --text-muted: hsl(0 0% 64%);
+      --accent: #4f46e5;
+    }
+
+    body {
+      font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+      background: var(--bg);
+      color: var(--text-primary);
+      min-height: 100vh;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding: 24px;
+    }
+
+    .container {
+      text-align: center;
+      max-width: 480px;
+    }
+
+    .error-code {
+      font-size: 120px;
+      font-weight: 700;
+      line-height: 1;
+      color: var(--text-primary);
+      letter-spacing: -4px;
+    }
+
+    .error-code span {
+      color: var(--accent);
+    }
+
+    .error-title {
+      font-size: 24px;
+      font-weight: 700;
+      margin-top: 16px;
+    }
+
+    .error-message {
+      color: var(--text-muted);
+      font-size: 16px;
+      margin-top: 12px;
+      line-height: 1.6;
+    }
+
+    .home-link {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      margin-top: 36px;
+      padding: 12px 24px;
+      background: var(--accent);
+      color: #fff;
+      text-decoration: none;
+      border-radius: 10px;
+      font-weight: 600;
+      font-size: 15px;
+      transition: background 0.2s ease, transform 0.2s ease;
+    }
+
+    .home-link:hover {
+      background: #3a3ae0;
+      transform: translateY(-2px);
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <div class="error-code">4<span>0</span>4</div>
+    <p class="error-title">Page not found</p>
+    <p class="error-message">Looks like this page doesn't exist anymore — <span style="white-space: nowrap;">or maybe it never did.</span> Either way, let's get you back on track.</p>
+    <a class="home-link" href="/">
+      <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="15 18 9 12 15 6"/></svg>
+      Back to portfolio
+    </a>
+  </div>
+</body>
+</html>
