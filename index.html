@@ -822,12 +822,35 @@
     }
 
   
-  @media (max-width: 580px) {
-    a.timeline-company-group.tapped,
-    a.edu-card.tapped {
-      background: var(--accent-light);
-      box-shadow: 0 4px 16px rgba(0,0,0,0.08);
-    }
+  a.timeline-company-group.tapped,
+  a.edu-card.tapped {
+    background: var(--accent-light);
+    box-shadow: 0 4px 16px rgba(0,0,0,0.08);
+  }
+
+  .visit-tooltip {
+    position: fixed;
+    background: #1a1a1a;
+    color: #fff;
+    font-size: 12px;
+    font-weight: 600;
+    padding: 5px 12px;
+    border-radius: 6px;
+    pointer-events: none;
+    opacity: 0;
+    transition: opacity 0.15s ease, transform 0.15s ease;
+    z-index: 9999;
+    white-space: nowrap;
+    transform: translateX(-50%) translateY(-6px);
+    cursor: pointer;
+    user-select: none;
+  }
+  .visit-tooltip.show {
+    opacity: 1;
+    transform: translateX(-50%) translateY(0);
+  }
+  .visit-tooltip:hover {
+    background: #333;
   }
 
   /* ── DARK MODE TOGGLE ── */
@@ -1380,7 +1403,54 @@
     el.insertBefore(document.createTextNode(''), cursor);
     setTimeout(type, 300);
   })();
+  // Card navigation tooltip
+  var visitTooltip = document.createElement('span');
+  visitTooltip.className = 'visit-tooltip';
+  visitTooltip.textContent = 'Go to site →';
+  visitTooltip.style.pointerEvents = 'none';
+  document.body.appendChild(visitTooltip);
+  var visitTimer;
+  var currentTapped = null;
+  var tooltipClientX = 0;
+  var tooltipClientY = 0;
+  var scrollYAtClick = 0;
+
   function isMobile() { return window.matchMedia('(max-width: 580px)').matches; }
+
+  // Keep tooltip fixed by compensating for scroll
+  window.addEventListener('scroll', function() {
+    if (visitTooltip.classList.contains('show')) {
+      var scrollDelta = window.scrollY - scrollYAtClick;
+      visitTooltip.style.top = (tooltipClientY - 36 - scrollDelta) + 'px';
+    }
+  });
+
+  visitTooltip.addEventListener('click', function(e) {
+    e.stopPropagation();
+    if (currentTapped) {
+      window.open(currentTapped.getAttribute('href'), '_blank', 'noopener');
+      dismissTooltip();
+    }
+  });
+
+  function dismissTooltip() {
+    visitTooltip.classList.remove('show');
+    visitTooltip.style.pointerEvents = 'none';
+    if (currentTapped) { currentTapped.classList.remove('tapped'); currentTapped = null; }
+    clearTimeout(visitTimer);
+  }
+
+  function showTooltip(e) {
+    tooltipClientX = e.clientX;
+    tooltipClientY = e.clientY;
+    scrollYAtClick = window.scrollY;
+    visitTooltip.style.left = tooltipClientX + 'px';
+    visitTooltip.style.top  = (tooltipClientY - 36) + 'px';
+    visitTooltip.style.transform = 'translateX(-50%)';
+    visitTooltip.style.pointerEvents = 'auto';
+    visitTooltip.classList.add('show');
+    visitTimer = setTimeout(dismissTooltip, 2500);
+  }
 
   function setupTwoTap(selector) {
     document.querySelectorAll(selector).forEach(function(card) {
@@ -1388,14 +1458,32 @@
       if (!url || url === '#') return;
 
       card.addEventListener('click', function(e) {
-        if (!isMobile()) return;
+        e.preventDefault();
         var isActive = card.classList.contains('tapped');
-        document.querySelectorAll('a.timeline-company-group.tapped, a.edu-card.tapped').forEach(function(c) {
-          c.classList.remove('tapped');
-        });
-        if (!isActive) {
-          e.preventDefault();
-          card.classList.add('tapped');
+        var tooltipVisible = visitTooltip.classList.contains('show') && currentTapped === card;
+
+        dismissTooltip();
+
+        if (isMobile()) {
+          // Mobile: click 1 = highlight, click 2 = show tooltip, click 3 = navigate (via tooltip)
+          if (!isActive) {
+            // First click — just highlight
+            card.classList.add('tapped');
+            currentTapped = card;
+          } else if (!tooltipVisible) {
+            // Second click — show tooltip
+            card.classList.add('tapped');
+            currentTapped = card;
+            showTooltip(e);
+          }
+          // Third click handled by tooltip's own click listener
+        } else {
+          // Desktop: click 1 = highlight + show tooltip, click 2 = navigate (via tooltip)
+          if (!isActive) {
+            card.classList.add('tapped');
+            currentTapped = card;
+            showTooltip(e);
+          }
         }
       });
     });
@@ -1404,13 +1492,10 @@
   setupTwoTap('a.timeline-company-group');
   setupTwoTap('a.edu-card');
 
-  // Tap outside to dismiss
+  // Click outside to dismiss
   document.addEventListener('click', function(e) {
-    if (!isMobile()) return;
-    if (!e.target.closest('a.timeline-company-group') && !e.target.closest('a.edu-card')) {
-      document.querySelectorAll('a.timeline-company-group.tapped, a.edu-card.tapped').forEach(function(c) {
-        c.classList.remove('tapped');
-      });
+    if (!e.target.closest('a.timeline-company-group') && !e.target.closest('a.edu-card') && e.target !== visitTooltip) {
+      dismissTooltip();
     }
   });
 </script>
